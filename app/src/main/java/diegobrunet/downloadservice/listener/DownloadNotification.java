@@ -11,7 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.v7.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat;
 
 import diegobrunet.downloadservice.R;
 import diegobrunet.downloadservice.service.DownloadService;
@@ -24,16 +24,16 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 
 public class DownloadNotification {
 
+    String CHANNEL_ID = "CHANNEL_ID";
     private static final int MAX_PROGRESS = 100;
     private static final int MIN_PROGRESS = 0;
 
-    private Context context;
     private DownloadService downloadService = null;
+    private NotificationCompat.Builder notifyBuilder;
     private int lastProgress = 0;
     private String urlDownload;
 
     public DownloadNotification(Context context) {
-        this.context = context;
     }
 
     public void onUpdateDownloadProgress(int progress) {
@@ -58,15 +58,91 @@ public class DownloadNotification {
 
     public Notification getDownloadNotification(String title, int progress) {
 
+        // Create NotificationManager.
+        final NotificationManager notificationManager = (NotificationManager) downloadService.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        // NotificationTargetActivity is the activity opened when user click notification.
         Intent intent = new Intent();
         PendingIntent pendingIntent = PendingIntent.getActivity(downloadService, 0, intent, 0);
 
+        // Create a Notification Builder instance.
+        String textContent = "Download progress...";
+        int smallIconResId = R.drawable.ic_launcher_foreground;
+        int largeIconResId = R.drawable.ic_launcher_background;
+        long sendTime = System.currentTimeMillis();
+        boolean autoCancel = false;
+
+        // Get general settings Builder instance.
+        final NotificationCompat.Builder builder = getGeneralNotificationBuilder(title, textContent, smallIconResId, largeIconResId, autoCancel, sendTime);
+
+        // Set content intent.
+        builder.setContentIntent(pendingIntent);
+
+        // Use both light, sound and vibrate.
+        builder.setDefaults(Notification.DEFAULT_ALL);
+
+        // The thread object will update the Notification progress programmatically.
+        Notification notification = null;
+
+        if (progress < MAX_PROGRESS) {
+
+            builder.setProgress(MAX_PROGRESS, progress, false);
+            // Create Notification instance.
+            notification = builder.build();
+            notification.flags = Notification.FLAG_ONLY_ALERT_ONCE;
+            notificationManager.notify(1, notification = builder.build());
+
+        } else if (progress == MAX_PROGRESS) {
+
+            builder.setContentText("Download complete");
+            //.builder.setProgress(0, 0, true) will show a indeterminate progress bar.
+            builder.setProgress(MAX_PROGRESS, 0, false);
+            // Send the notification.
+            // Create Notification instance.
+            notificationManager.notify(1, notification = builder.build());
+        }
+
+        return notification;
+    }
+
+    // This method create and return a general Notification Builder instance.
+    private NotificationCompat.Builder getGeneralNotificationBuilder(String title, String textContent, int smallIconResId, int largeIconResId, boolean autoCancel, long sendTime) {
+        // Create a Notification Builder instance.
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(downloadService.getApplicationContext());
+
+        // Set small icon.
+        builder.setSmallIcon(smallIconResId);
+
+        // Set large icon.
+        Bitmap bitmap = BitmapFactory.decodeResource(downloadService.getResources(), largeIconResId);
+        builder.setLargeIcon(bitmap);
+
+        // Set title.
+        builder.setContentTitle(title);
+
+        // Set content text.
+        builder.setContentText(textContent);
+
+        // Set notification send time.
+        builder.setWhen(sendTime);
+
+        // If true then cancel the notification automatically.
+        builder.setAutoCancel(autoCancel);
+
+        return builder;
+    }
+
+    public Notification getNotification(String title, int progress) {
         //sera criado uma notificação por URL
         NotificationCompat.Builder notifyBuilder = new NotificationCompat.Builder(downloadService);
         notifyBuilder.setSmallIcon(R.mipmap.ic_launcher);
 
         Bitmap bitmap = BitmapFactory.decodeResource(downloadService.getResources(), R.drawable.ic_launcher_foreground);
         notifyBuilder.setLargeIcon(bitmap);
+
+        // NotificationTargetActivity is the activity opened when user click notification.
+        Intent intent = new Intent();
+        PendingIntent pendingIntent = PendingIntent.getActivity(downloadService, 0, intent, 0);
 
         notifyBuilder.setContentIntent(pendingIntent);
         notifyBuilder.setContentTitle(title);
