@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/download_manager_url_editor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Input download file url." />
+
+    <Button
+        android:id="@+id/download_manager_start_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:enabled="true"
+        android:text="Start Download"
+        android:textAllCaps="false" />
+
+</LinearLayout>
