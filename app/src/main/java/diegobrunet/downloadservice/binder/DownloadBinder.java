@@ -22,7 +22,7 @@ public class DownloadBinder extends Binder {
     public DownloadBinder(Context context) {
 
         if (downloadNotification == null) {
-            downloadNotification = new DownloadNotification(context);
+            downloadNotification = new DownloadNotification();
         }
     }
 
@@ -36,13 +36,12 @@ public class DownloadBinder extends Binder {
         //executa a task
         downloadTask.execute(downloadUrl);
 
-        // Save current download file url.
+        // Corrente url
         this.downloadUrl = downloadUrl;
 
-        // Create and start foreground service with notification.
-        downloadNotification.setUrlDownload(downloadUrl);
+        //cria notificação e insere em fore
         Notification notification = downloadNotification.getDownloadNotification("Downloading...", progress);
-        downloadNotification.getDownloadService().startForeground(downloadUrl.toString().hashCode(), notification);
+        downloadNotification.getDownloadService().startForeground(1, notification);
     }
 
     public void continueDownload() {

@@ -27,6 +27,7 @@ public class FileUtil {
 
     private static OkHttpClient okHttpClient = new OkHttpClient();
 
+    //baixa o arquivo e copia para o arquivo local criado
     public static int downloadFileFromUrl(String downloadFileUrl, File existLocalFile) {
         int ret = DOWNLOAD_SUCCESS;
 
@@ -99,7 +100,7 @@ public class FileUtil {
         }
     }
 
-    /* Get download file size returned from http server header. */
+    //retorna o tamanho do arquivo
     public static long getRequestFileSize(String downloadUrl) {
         long ret = 0;
 
@@ -127,6 +128,7 @@ public class FileUtil {
         }
     }
 
+    //cria e retorna o arquivo local
     public static File createDownloadLocalFile(String downloadFileUrl) {
         File file = null;
 

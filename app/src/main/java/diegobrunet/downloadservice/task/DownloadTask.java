@@ -37,9 +37,11 @@ public class DownloadTask extends AsyncTask<String, Integer, Integer> {
             downloadFileUrl = params[0];
         }
 
-        currDownloadUrl = downloadFileUrl;
+        this.currDownloadUrl = downloadFileUrl;
 
+        //arquivo criado na pasta download
         File downloadLocalFile = createDownloadLocalFile(downloadFileUrl);
+        //retorna o status do download
         int ret = FileUtil.downloadFileFromUrl(downloadFileUrl, downloadLocalFile);
 
         return ret;

@@ -1,9 +1,5 @@
 package diegobrunet.downloadservice.service;
 
-/**
- * Created by diego on 16/07/18.
- */
-
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
@@ -11,6 +7,9 @@ import android.widget.Toast;
 
 import diegobrunet.downloadservice.binder.DownloadBinder;
 
+/**
+ * Created by diego on 16/07/18.
+ */
 public class DownloadService extends Service {
 
     public static final String ACTION_PAUSE_DOWNLOAD = "ACTION_PAUSE_DOWNLOAD";
@@ -32,7 +31,13 @@ public class DownloadService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        String action = intent.getAction();
+
+        String action = intent.getAction() != null ? intent.getAction() : null;
+
+        if (action != null) {
+            return super.onStartCommand(intent, flags, startId);
+        }
+
         if (ACTION_PAUSE_DOWNLOAD.equals(action)) {
             downloadBinder.pauseDownload();
             Toast.makeText(getApplicationContext(), "Download pausado", Toast.LENGTH_LONG).show();
