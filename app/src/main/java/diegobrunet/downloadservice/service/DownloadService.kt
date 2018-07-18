@@ -17,5 +17,4 @@ class DownloadService : Service() {
         downloadBinder.downloadNotification?.downloadService = this
         return downloadBinder
     }
-
 }

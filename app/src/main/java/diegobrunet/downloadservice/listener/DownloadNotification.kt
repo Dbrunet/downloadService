@@ -44,22 +44,19 @@ class DownloadNotification {
     fun onUpdateDownloadProgress(progress: Int) {
         try {
             lastProgress = progress
-            sendDownloadNotification("Baixando...", null, progress)
+            sendDownloadNotification("Baixando...", "Iniciando o serviço", progress)
 
             Thread.sleep(200)
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
-
     }
-
 
     fun sendDownloadNotification(title: String, text: String?, progress: Int) {
         val notification = getDownloadNotification(title, text, progress)
 
         val notificationManager = this.downloadService!!.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(1, notification)
-
     }
 
     fun getDownloadNotification(title: String, text: String?, progress: Int): Notification {
@@ -71,10 +68,11 @@ class DownloadNotification {
             notifyBuilder?.setAutoCancel(true)
             notifyBuilder?.setContentIntent(pendingIntent)
             notifyBuilder?.setContentTitle(title)
+            if (text != null) notifyBuilder?.setContentText(text)
             notifyBuilder?.priority = NotificationCompat.PRIORITY_HIGH
         }
 
-        if (progress > 0 && progress < 100) {
+        if (progress in 1..99) {
             val stringBuffer = StringBuffer()
             stringBuffer.append("Baixando progresso ")
             stringBuffer.append(progress)
@@ -91,6 +89,4 @@ class DownloadNotification {
 
         return notifyBuilder!!.build()
     }
-
-
 }

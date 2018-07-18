@@ -35,7 +35,7 @@ class DownloadBinder : Binder() {
         this.downloadUrl = downloadUrl
 
         //cria notificação e insere em fore
-        val notification = downloadNotification?.getDownloadNotification("Baixando...", null, progress)
+        val notification = downloadNotification?.getDownloadNotification("Baixando...", "Iniciando o serviço", progress)
         downloadNotification!!.downloadService?.startForeground(1, notification)
     }
 
